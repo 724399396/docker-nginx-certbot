@@ -9,7 +9,6 @@ if [ -z "$CERTBOT_EMAIL" ]; then
     exit 1
 fi
 
-exit_code=0
 set -x
 # Loop over every domain we can find
 for domain in $(parse_domains); do
@@ -18,7 +17,7 @@ for domain in $(parse_domains); do
         # Last one happened over a week ago (or never)
         if ! get_certificate $domain $CERTBOT_EMAIL; then
             error "Cerbot failed for $domain. Check the logs for details."
-            exit_code=1
+            exit 1
         fi
     else
         echo "Not run certbot for $domain; last renewal happened just recently."
@@ -33,4 +32,3 @@ auto_enable_configs
 kill -HUP $NGINX_PID
 
 set +x
-exit $exit_code
